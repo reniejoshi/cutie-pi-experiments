@@ -4,11 +4,14 @@ from signal import pause
 
 led = RGBLED(red=14, green=15, blue=18)
 
-led.red = 1.0
-led.green = 0.5
-led.blue = 0.0
+print("Red: ", end="")
+led.red = float(input())
+print("Green: ", end="")
+led.green = float(input())
+print("Blue: ", end="")
+led.blue = float(input())
 
-sleep(2)
+sleep(1)
 
 led.pulse()
 pause()
