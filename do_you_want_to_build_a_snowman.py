@@ -28,7 +28,7 @@ note_durations = [
     4, 4, 4, 4, 1
 ]
 
-buzzer = PWMOutputDevice(18)
+buzzer = PWMOutputDevice(2)
 
 def play_snowman():
     tempo = 1.4
