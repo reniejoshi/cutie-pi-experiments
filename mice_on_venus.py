@@ -1,5 +1,7 @@
 from gpiozero import PWMOutputDevice
+from sshkeyboard import listen_keyboard, stop_listening
 from time import sleep
+import threading
 
 NOTE_A4  = 440
 NOTE_B4  = 494
@@ -37,26 +39,44 @@ note_durations = [
 ]
 
 buzzer = PWMOutputDevice(2)
+running = True
 
 def play_minecraft():
     tempo = 1.9
     
-    for note, duration in zip(melody, note_durations):
-        note_duration = tempo / duration
-        
-        if note == 0:
-            sleep(note_duration)
-        else:
-            buzzer.frequency = note
-            buzzer.value = 0.5
+    while running:
+        for note, duration in zip(melody, note_durations):
+            if not running:
+                break
+
+            note_duration = tempo / duration
             
-            sleep(note_duration * 0.95)
-            buzzer.value = 0
-            sleep(note_duration * 0.05)
+            if note == 0:
+                sleep(note_duration)
+            else:
+                buzzer.frequency = note
+                buzzer.value = 0.5
+                
+                sleep(note_duration * 0.95)
+                buzzer.value = 0
+                sleep(note_duration * 0.05)
+        
+        if running:
+            sleep(2)
+
+def on_press(key):
+    global running
+    if key == "q":
+        running = False
+        stop_listening()
 
 try:
-    play_minecraft()
+    music_thread = threading.Thread(target=play_minecraft)
+    music_thread.start()
+    listen_keyboard(on_press=on_press)
 except KeyboardInterrupt:
+    running = False
+    stop_listening()
     buzzer.off()
 finally:
     buzzer.close()
