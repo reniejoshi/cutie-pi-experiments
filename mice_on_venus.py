@@ -74,6 +74,7 @@ try:
     music_thread = threading.Thread(target=play_minecraft)
     music_thread.start()
     listen_keyboard(on_press=on_press)
+    music_thread.join()
 except KeyboardInterrupt:
     running = False
     stop_listening()
